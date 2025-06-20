@@ -20,9 +20,9 @@ let compScore = 0;
 
 // Image Paths 
 const IMAGES = {
-    rock: "/imgs/rock.png",
-    paper: "/imgs/paper.png",
-    scissors: "/imgs/scissors.png"
+    rock: "rock.png",
+    paper: "paper.png",
+    scissors: "scissors.png"
 };
 
 // Initialize the game
