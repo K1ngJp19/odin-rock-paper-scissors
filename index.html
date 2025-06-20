@@ -5,10 +5,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rock, Paper, Scissors</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="scripts.js" defer></script>
 </head>
 
 <body>
-    <script src="scripts.js"></script>
+
+    <!-- nav bar -->
+    <div class="nav-bar">
+        <h1>ROCK PAPER SCISSORS</h1>
+    </div>
+
+    <!-- Content -->
+    <div class="container">
+
+        <div class="score">
+            <p id="you-score">0</p>
+            <p>-</p>
+            <p id="comp-score">0</p>
+        </div>
+
+        <div id="message">Let's Start!</div>
+
+        <div class="game-container">
+            <div class="you">
+
+                <div class="user">
+                    <h1>You</h1>
+                    <div><img src="/imgs/user.png"></div>
+                </div>
+
+                <div class="screen" id="you-screen"></div>
+
+                <div class="btn-panel">
+                    <button id="rock"><img src="/imgs/rock.png"></button>
+                    <button id="paper"><img src="/imgs/paper.png"></button>
+                    <button id="scissors"><img src="/imgs/scissors.png"></button>
+                </div>
+            </div>
+
+            <div class="versus">
+                <img src="/imgs/versus.png">
+            </div>
+
+            <div class="comp">
+                <div class="user">
+                    <h1>Computer</h1>
+                    <div><img src="/imgs/computer.png"></div>
+                </div>
+
+                <div class="screen" id="comp-screen"></div>
+
+            </div>
+
+        </div>
+
+        <div class="popup">
+            <div class="popup-inner">
+                <h1 id="popup-heading">Congratulations You Win!</h1>
+                <p>Do you like to play another match?</p>
+                <button id="reset">RESET</button>
+            </div>
+        </div>
+
+    </div>
+
 </body>
 
 </html>
