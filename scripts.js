@@ -1,86 +1,128 @@
+// DOM Elements
+const rockBtn = document.querySelector("#rock");
+const paperBtn = document.querySelector("#paper");
+const scissorsBtn = document.querySelector("#scissors");
+const resetBtn = document.querySelector("#reset");
+
+const screenYou = document.querySelector("#you-screen");
+const screenComputer = document.querySelector("#comp-screen");
+
+const scoreYou = document.querySelector("#you-score");
+const scoreComputer = document.querySelector("#comp-score");
+
+const message = document.querySelector("#message");
+const popup = document.querySelector(".popup");
+const popupHeading = document.querySelector("#popup-heading");
+
+// Game State
+let yourScore = 0;
+let compScore = 0;
+
+// Image Paths 
+const IMAGES = {
+    rock: "/imgs/rock.png",
+    paper: "/imgs/paper.png",
+    scissors: "/imgs/scissors.png"
+};
+
+// Initialize the game
+function initGame() {
+    yourScore = 0;
+    compScore = 0;
+    scoreYou.textContent = "0";
+    scoreComputer.textContent = "0";
+    message.textContent = "Let's Start!";
+    screenYou.innerHTML = "";
+    screenComputer.innerHTML = "";
+    popup.classList.remove("open");
+}
+
+// Human Choice Handlers
+function handleChoice(choice) {
+    screenYou.innerHTML = `<img src="${IMAGES[choice.toLowerCase()]}" alt="${choice}">`;
+    const computerChoice = getComputerChoice();
+    const result = playRound(choice, computerChoice);
+    updateGame(result);
+}
+
+// Event Listeners
+rockBtn.addEventListener("click", () => handleChoice("Rock"));
+paperBtn.addEventListener("click", () => handleChoice("Paper"));
+scissorsBtn.addEventListener("click", () => handleChoice("Scissors"));
+resetBtn.addEventListener("click", initGame);
+
 // Computer Random Choice
 function getComputerChoice() {
-    const answer = ["Rock", "Paper", "Scissors"];
-    const randomAnswer = Math.floor(Math.random() * answer.length);
-    return answer[randomAnswer].toLowerCase();
+    const choices = ["Rock", "Paper", "Scissors"];
+    const randomChoice = choices[Math.floor(Math.random() * choices.length)];
+
+    // Update computer screen
+    screenComputer.innerHTML = `<img src="${IMAGES[randomChoice.toLowerCase()]}" alt="${randomChoice}">`;
+
+    return randomChoice;
 }
 
-// Human Choice
-function getHumanChoice() {
-    return prompt("Enter your choice: [rock, paper, scissors]").toLowerCase();
-}
+// Game Logic
+function playRound(humanChoice, computerChoice) {
+    // Normalize to lowercase for comparison
+    const human = humanChoice.toLowerCase();
+    const computer = computerChoice.toLowerCase();
 
-// Play Game Logic
-function playGame() {
-    let humanScore = 0;
-    let computerScore = 0;
-
-    // Show score each round
-    function determineWinner(message, humanScore, computerScore) {
-        const winner = `${message}Player\t: ${humanScore} \nComputer\t: ${computerScore}`;
-        alert(winner);
+    // Tie condition
+    if (human === computer) {
+        return { message: "It's a tie!", winner: "none" };
     }
 
-    // One round logic
-    function playRound(human, computer) {
-        // Tie
-        if (human === computer) return "It's a tie!";
+    // Win conditions
+    const winConditions = {
+        rock: { beats: "scissors", message: "Rock crushes Scissors" },
+        paper: { beats: "rock", message: "Paper covers Rock" },
+        scissors: { beats: "paper", message: "Scissors cut Paper" }
+    };
 
-        let result = "";
-
-        // Logic
-        if (human === "rock") {
-            if (computer === "paper") {
-                computerScore++;
-                result = "You Lose! Paper beats Rock";
-            } else if (computer === "scissors") {
-                humanScore++;
-                result = "You Win! Rock beats Scissors";
-            }
-        } else if (human === "paper") {
-            if (computer === "rock") {
-                humanScore++;
-                result = "You Win! Paper beats Rock";
-            } else if (computer === "scissors") {
-                computerScore++;
-                result = "You Lose! Scissors beats Paper";
-            }
-        } else if (human === "scissors") {
-            if (computer === "rock") {
-                computerScore++;
-                result = "You Lose! Rock beats Scissors";
-            } else if (computer === "paper") {
-                humanScore++;
-                result = "You Win! Scissors beats Paper";
-            }
-        } else {
-            result = "Invalid Input";
-        }
-
-        return result;
-    }
-
-    // Play 5 rounds
-    for (let i = 1; i <= 5; i++) {
-        const human = getHumanChoice();
-        const computer = getComputerChoice();
-        const result = playRound(human, computer);
-
-        alert(`Round ${i}:\nPlayer: ${human}\nComputer: ${computer}\nResult: ${result}`);
-        determineWinner(`Round ${i}:\n`, humanScore, computerScore);
-    }
-
-    // Final Result
-    let winnerMessage;
-    if (humanScore > computerScore) {
-        winnerMessage = "Congratulations! You win the game!\n";
-    } else if (humanScore < computerScore) {
-        winnerMessage = "Better Luck Next Time! You lose the game!\n";
+    if (winConditions[human].beats === computer) {
+        return {
+            message: `You Win! ${winConditions[human].message}`,
+            winner: "player"
+        };
     } else {
-        winnerMessage = "It's a tie game!\n";
+        return {
+            message: `You Lose! ${winConditions[computer].message}`,
+            winner: "computer"
+        };
     }
-
-    determineWinner(winnerMessage, humanScore, computerScore);
 }
 
-playGame();
+// Update Game State
+function updateGame(result) {
+    // Update message
+    message.textContent = result.message;
+
+    // Update scores
+    if (result.winner === "player") {
+        yourScore++;
+        scoreYou.textContent = yourScore;
+    } else if (result.winner === "computer") {
+        compScore++;
+        scoreComputer.textContent = compScore;
+    }
+
+    // Check for game winner (best of 5)
+    if (yourScore >= 5 || compScore >= 5) {
+        declareWinner();
+    }
+}
+
+// Declare Final Winner
+function declareWinner() {
+    if (yourScore > compScore) {
+        popupHeading.textContent = `Congratulations! You Win ${yourScore}-${compScore}`;
+    } else {
+        popupHeading.textContent = `Computer Wins ${compScore}-${yourScore}`;
+    }
+
+    popup.classList.add("open");
+}
+
+// Initialize the game when loaded
+initGame();
